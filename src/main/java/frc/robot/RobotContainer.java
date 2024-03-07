@@ -10,6 +10,7 @@ import static frc.robot.Constants.SolenoidConstants.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -66,15 +67,16 @@ public class RobotContainer {
         m_drivetrain
       ));
 
-    m_shooter.setDefaultCommand(new RunCommand(() -> m_shooter.stopShooting(), m_shooter));
-    m_rotator.setDefaultCommand(new RunCommand(() -> m_rotator.rotatorStop(), m_rotator));
+    m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
+    // m_rotator.setDefaultCommand(new RunCommand(() -> m_rotator.rotatorStop(), m_rotator));
     //m_operatorController.leftTrigger().whileTrue(new Chomp(m_intake));
     
     // m_operatorController.rightTrigger().whileTrue(new Shoot(m_shooter));
     //m_operatorController.rightTrigger().onTrue(new RunCommand(() -> m_shooter.shootNote(kShooterSpeed), m_shooter)).whileFalse((new RunCommand(() -> m_shooter.shootNote(0), m_shooter)));
     
     // m_operatorController.a().whileTrue(new RunCommand(() -> m_arm.setArmSpeed(-.1), m_arm));
-
+    m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
+      .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
    //~~~~~~~~~STOP NO STOP~~~~~~Things below here seem to work correctly~~~~~~~~~~~~~~~~~~~~~~~
 
 //Note intake/outtake
