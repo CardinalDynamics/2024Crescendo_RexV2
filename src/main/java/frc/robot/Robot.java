@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putNumber("Arm Angle", m_robotContainer.m_arm.getMeasurement());
+    SmartDashboard.putNumber("Shooter Angle", m_robotContainer.m_rotator.getMeasurement());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.cancel();
-    m_robotContainer.m_arm.zeroEncoder();
+    // m_robotContainer.m_arm.zeroEncoder();
     }
 
   /** This function is called periodically during operator control. */

@@ -48,7 +48,7 @@ public final class Constants {
     public static final int kPneumaticsHubID = 1;
   }
 
-  public static class ArmConstants {
+  public static class RotatorConstants {
     // Arm motorcontroller CAN IDs and motor speeds
     public static final int kArmID = 7;
     public static final int kSecondArmID = 9;
@@ -59,12 +59,18 @@ public final class Constants {
     public static final int kSourceB = 4;
   }
 
-  public static class ArmPIDConstants {
+  public static class RotatorPIDConstants {
     public static final double kP = .05;
     public static final double kI = 0;
-    public static final double kD = 0.0001;
+    public static final double kD = 0;
 
-    public static final double kArmUpSetPoint = 95;
-    public static final double kShootingPositionSetPoint = 0;
+    // public static final double kArmUpSetPoint = 95;
+    // public static final double kShootingPositionSetPoint = 0;
+  }
+
+  public static class ShooterPIDConstants {
+    public static final double kP = .01;
+    public static final double kI = 0;
+    public static final double kD = 0;
   }
 }
