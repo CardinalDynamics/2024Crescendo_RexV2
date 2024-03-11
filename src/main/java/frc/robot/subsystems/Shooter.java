@@ -35,12 +35,6 @@ public class Shooter extends SubsystemBase {
         setpoint = 0;
     }
 
-    public double getMeasurement() {
-        return
-            (m_bottomEncoder.getVelocity()
-            + m_topEncoder.getVelocity()) / 2;
-    }
-
     public boolean atSetpoint() {
         return m_controller.atSetpoint();
     }
@@ -50,23 +44,18 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getBottomShooterSpeed() {
-        if (m_bottomEncoder.getVelocity() < 10) {
+        if (m_bottomEncoder.getVelocity() < 10 && m_bottomEncoder.getVelocity() > -10) {
             return 0.0;
         }
         return m_bottomEncoder.getVelocity();
     }
 
     public double getTopShooterSpeed() {
-        if (m_topEncoder.getVelocity() < 10) {
+        if (m_topEncoder.getVelocity() < 10 && m_topEncoder.getVelocity() > -10) {
             return 0.0;
         }
         return m_topEncoder.getVelocity();
     }
-
-    // public void useOutput(double output, double setpoint) {
-    //     topShooter.setVoltage(output);
-    //     topShooter.setVoltage(output);
-    // }
 
     public void goToSpeed() {
         if (m_controller.getSetpoint() == 0 && m_controller.atSetpoint()) {

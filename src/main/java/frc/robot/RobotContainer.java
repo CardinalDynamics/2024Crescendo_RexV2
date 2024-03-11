@@ -3,12 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import static frc.robot.Constants.RotatorPIDConstants.*;
-import static frc.robot.Constants.IntakeConstants.*;
-import static frc.robot.Constants.SolenoidConstants.*;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.Chomp;
 
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -68,13 +61,8 @@ public class RobotContainer {
       ));
 
     m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
-    // m_rotator.setDefaultCommand(new RunCommand(() -> m_rotator.rotatorStop(), m_rotator));
-    //m_operatorController.leftTrigger().whileTrue(new Chomp(m_intake));
-    
-    // m_operatorController.rightTrigger().whileTrue(new Shoot(m_shooter));
-    //m_operatorController.rightTrigger().onTrue(new RunCommand(() -> m_shooter.shootNote(kShooterSpeed), m_shooter)).whileFalse((new RunCommand(() -> m_shooter.shootNote(0), m_shooter)));
-    
-    // m_operatorController.a().whileTrue(new RunCommand(() -> m_arm.setArmSpeed(-.1), m_arm));
+    // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
+
     m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
       .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
    //~~~~~~~~~STOP NO STOP~~~~~~Things below here seem to work correctly~~~~~~~~~~~~~~~~~~~~~~~
