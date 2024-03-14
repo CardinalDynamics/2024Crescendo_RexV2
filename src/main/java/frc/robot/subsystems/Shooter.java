@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
         m_controller.setTolerance(100);
         m_controller.setSetpoint(0);
         // Top and bottom shooter should both be going outwards given positive input.
-        m_bottomShooter.setInverted(true);
+        m_bottomShooter.setInverted(false);
         m_topShooter.setInverted(false);
         setpoint = 0;
     }

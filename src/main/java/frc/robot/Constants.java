@@ -52,11 +52,11 @@ public final class Constants {
     // Arm motorcontroller CAN IDs and motor speeds
     public static final int kArmID = 7;
     public static final int kSecondArmID = 9;
-    public static final double kArmSpeedUp = .5;
-    public static final double kArmSpeedDown = -.5;
+    // public static final double kArmSpeedUp = .5;
+    // public static final double kArmSpeedDown = -.5;
 
-    public static final int kSourceA = 3;
-    public static final int kSourceB = 4;
+    // public static final int kSourceA = 3;
+    // public static final int kSourceB = 4;
   }
 
   public static class RotatorPIDConstants {
@@ -72,5 +72,10 @@ public final class Constants {
     public static final double kP = .01;
     public static final double kI = 0;
     public static final double kD = 0;
+  }
+
+  public static class LimelightConstants {
+    public static final double kLimelightMountAngle = 0;
+    public static final double kLimelightLenseHeight = 0;
   }
 }

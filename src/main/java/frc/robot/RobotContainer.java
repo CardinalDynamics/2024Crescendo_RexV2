@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rotator;
 import frc.robot.subsystems.Shooter;
+// import frc.robot.subsytems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,17 +61,20 @@ public class RobotContainer {
         () -> m_drivetrain.arcadeDrive(m_driverController.getLeftY(), m_driverController.getRightX()),
         m_drivetrain
       ));
-
     m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
+    
     // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
-
+    // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
+    
     m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
       .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
-   //~~~~~~~~~STOP NO STOP~~~~~~Things below here seem to work correctly~~~~~~~~~~~~~~~~~~~~~~~
-
-//Note intake/outtake
+    
     m_operatorController.leftBumper().onTrue(new RunCommand(() -> m_intake.intakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
     m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_intake.outtakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
+    
+    // Uncomment when LL added
+    // m_operatorController.a().onTrue(new InstantCommand(() -> SmartDashboard.putNumber("Distance From Speaker", Vision.getDistanceFromSpeaker())))
+    //   .onFalse(new InstantCommand(() -> SmartDashboard.putNumber("Distance From Speaker", 0.0)));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
