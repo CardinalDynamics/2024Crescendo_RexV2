@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.IntakeConstants.kShooterSpeed;
+import static frc.robot.Constants.RotatorConstants.kStartAngle;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -61,16 +64,20 @@ public class RobotContainer {
         () -> m_drivetrain.arcadeDrive(m_driverController.getLeftY(), m_driverController.getRightX()),
         m_drivetrain
       ));
-    m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
+    // m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
     
     // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
-    // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
-    
-    m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
-      .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
+    m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
+    m_shooter.setDefaultCommand(new RunCommand(() -> m_shooter.setSpeed(0), m_shooter));
+    // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
+    //   .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
+    m_operatorController.rightTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter));
     
     m_operatorController.leftBumper().onTrue(new RunCommand(() -> m_intake.intakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
     m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_intake.outtakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
+    
+    m_operatorController.a().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(20), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
+    // m_operatorController.b().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(kIntakeAngle), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
     
     // Uncomment when LL added
     // m_operatorController.a().onTrue(new InstantCommand(() -> SmartDashboard.putNumber("Distance From Speaker", Vision.getDistanceFromSpeaker())))

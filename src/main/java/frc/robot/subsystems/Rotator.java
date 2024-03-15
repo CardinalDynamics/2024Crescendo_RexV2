@@ -22,8 +22,8 @@ public class Rotator extends SubsystemBase {
     public Rotator() {
         m_leftArm = new CANSparkMax(kArmID, MotorType.kBrushless);
         m_rightArm = new CANSparkMax(kSecondArmID, MotorType.kBrushless);
-        m_leftArm.setInverted(true);
-        m_rightArm.setInverted(false);
+        m_leftArm.setInverted(false);
+        m_rightArm.setInverted(true);
 
         m_controller = new PIDController(kP, kI, kD);
         m_controller.setTolerance(.3);
@@ -31,16 +31,17 @@ public class Rotator extends SubsystemBase {
         m_leftEncoder = m_leftArm.getEncoder();
         m_rightEncoder = m_rightArm.getEncoder();
         // divide by geardown ratio multiplly by degrees
-        m_leftEncoder.setPositionConversionFactor((360/105));
-        m_rightEncoder.setPositionConversionFactor((360/105));
+        m_leftEncoder.setPositionConversionFactor((360/135));
+        m_rightEncoder.setPositionConversionFactor((360/135));
 
-        m_leftEncoder.setPosition(0);
-        m_rightEncoder.setPosition(0);
-        setpoint = 0;
+        m_leftEncoder.setPosition(kStartAngle);
+        m_rightEncoder.setPosition(kStartAngle);
+        setpoint = kStartAngle;
     }
 
     public double getMeasurement() {
-        return (m_leftEncoder.getPosition() + m_rightEncoder.getPosition()) / 2;
+        // return (m_leftEncoder.getPosition() + m_rightEncoder.getPosition()) / 2;
+        return m_rightEncoder.getPosition();
     }
 
     public boolean atSetpoint() {
