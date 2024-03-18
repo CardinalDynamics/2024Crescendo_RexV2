@@ -31,12 +31,14 @@ public class Rotator extends SubsystemBase {
         m_leftEncoder = m_leftArm.getEncoder();
         m_rightEncoder = m_rightArm.getEncoder();
         // divide by geardown ratio multiplly by degrees
-        m_leftEncoder.setPositionConversionFactor((360/135));
-        m_rightEncoder.setPositionConversionFactor((360/135));
+        m_leftEncoder.setPositionConversionFactor(360/135);
+        m_rightEncoder.setPositionConversionFactor(360/135);
+        // m_leftArm.burnFlash();
+        // m_rightArm.burnFlash();
 
         m_leftEncoder.setPosition(kStartAngle);
         m_rightEncoder.setPosition(kStartAngle);
-        setpoint = kStartAngle;
+        m_controller.setSetpoint(kStartAngle);
     }
 
     public double getMeasurement() {
@@ -51,7 +53,7 @@ public class Rotator extends SubsystemBase {
     public void setRotatorVoltage(double voltage) {
         m_rightArm.setVoltage(voltage);
         m_leftArm.setVoltage(voltage);
-    }
+    }   
 
     public void setRotatorSpeed(double speed) {
         m_leftArm.set(speed);
@@ -70,7 +72,7 @@ public class Rotator extends SubsystemBase {
     }
 
     public void setSetPoint(double setpoint) {
-        this.setpoint = setpoint;
+        m_controller.setSetpoint(setpoint);
     }
 
     public void goToSetpoint() {

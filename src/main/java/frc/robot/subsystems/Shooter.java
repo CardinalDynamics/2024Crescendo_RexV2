@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
 
     public void setSpeed(double speed) {
         m_topShooter.set(speed);
-        m_bottomShooter.set(speed);
+        m_bottomShooter.set(speed - .1);
     }
 
     // method to stop shooter motors

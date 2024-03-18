@@ -37,7 +37,7 @@ public final class Constants {
     public static final int kTopShooterID = 6;
     public static final int kBottomShooterID = 5;
     public static final int kIntakeID = 4;
-    public static final double kShooterSpeed = 1;
+    public static final double kShooterSpeed = .4;
     // public static final double kBottomShooterSpeed = -.9;
   }
 

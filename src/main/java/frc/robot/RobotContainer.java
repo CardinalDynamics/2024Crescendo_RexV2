@@ -67,16 +67,19 @@ public class RobotContainer {
     // m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
     
     // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
-    m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
-    m_shooter.setDefaultCommand(new RunCommand(() -> m_shooter.setSpeed(0), m_shooter));
+    m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.setRotatorSpeed(0), m_rotator));
+    m_shooter.setDefaultCommand(new RunCommand(() -> m_shooter.stopShooting(), m_shooter));
     // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
     //   .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
     m_operatorController.rightTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter));
     
     m_operatorController.leftBumper().onTrue(new RunCommand(() -> m_intake.intakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
     m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_intake.outtakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
-    
+    m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_shooter.setSpeed(-.1), m_shooter)).onFalse(new RunCommand(() -> m_shooter.setSpeed(0), m_shooter));
+
     m_operatorController.a().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(20), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
+    m_operatorController.y().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(.25), m_rotator));
+    m_operatorController.x().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(-.25), m_rotator));
     // m_operatorController.b().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(kIntakeAngle), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
     
     // Uncomment when LL added
@@ -91,11 +94,17 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     SequentialCommandGroup commandGroup = new SequentialCommandGroup(
-      new InstantCommand(() -> m_rotator.setRotatorVoltage(-10), m_rotator),
-      new WaitCommand(0.1),
-      new InstantCommand(() -> m_rotator.setRotatorVoltage(0), m_rotator),
+      new InstantCommand(() -> m_rotator.setRotatorSpeed(-.25), m_rotator),
+      new WaitCommand(1.0),
+      new InstantCommand(() -> m_rotator.setRotatorSpeed(0), m_rotator),
       (new WaitCommand(0.5)),
-      (new RunCommand(() -> m_drivetrain.arcadeDrive(-.5, 0), m_drivetrain)).withTimeout(2)
+      new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter).withTimeout(1),
+      new WaitCommand(0),
+      new InstantCommand(() -> m_intake.intakeNote(), m_intake),
+      new WaitCommand(1),
+      new InstantCommand(() -> m_shooter.stopShooting(), m_shooter),
+      new InstantCommand(() -> m_intake.stopIntake(), m_intake)
+      // (new RunCommand(() -> m_drivetrain.arcadeDrive(-.5, 0), m_drivetrain)).withTimeout(2)
     );
     return commandGroup;
   }
