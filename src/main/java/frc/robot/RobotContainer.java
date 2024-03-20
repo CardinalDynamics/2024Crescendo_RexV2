@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.Constants.IntakeConstants.kShooterSpeed;
 import static frc.robot.Constants.RotatorConstants.kStartAngle;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.OperatorConstants;
-
+import frc.robot.commands.LeftAuto;
+import frc.robot.commands.MiddleAuto;
+import frc.robot.commands.RightAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rotator;
@@ -39,6 +42,11 @@ public class RobotContainer {
   // public so I can use smartdashboard
   public final Rotator m_rotator = new Rotator();
   public final Shooter m_shooter = new Shooter();
+
+  public final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+  private final Command kMiddleAuto = new MiddleAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
+  private final Command kRightCurveAuto = new RightAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
+  private final Command kLeftCurveAuto = new LeftAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -47,6 +55,13 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    m_autoChooser.setDefaultOption("Middle Auto", kMiddleAuto);
+    m_autoChooser.addOption("Red Amp Side", kLeftCurveAuto);
+    m_autoChooser.addOption("Red Source Side", kRightCurveAuto);
+    m_autoChooser.addOption("Blue Source Side", kLeftCurveAuto);
+    m_autoChooser.addOption("Blue Amp Side", kRightCurveAuto);
+
+    SmartDashboard.putData(m_autoChooser);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -100,41 +115,6 @@ public class RobotContainer {
    */
 
   public Command getAutonomousCommand() {
-    ParallelCommandGroup driveAndIntake = new ParallelCommandGroup(
-      (new RunCommand(() -> m_drivetrain.arcadeDrive(-.5, 0), m_drivetrain)).withTimeout(1.5),
-      new InstantCommand(() -> m_intake.intakeNote(), m_intake)
-    );
-    SequentialCommandGroup commandGroup = new SequentialCommandGroup(
-      new InstantCommand(() -> m_rotator.setRotatorSpeed(-.25), m_rotator),
-      new WaitCommand(2.0),
-      new InstantCommand(() -> m_rotator.setRotatorSpeed(0), m_rotator),
-      (new WaitCommand(0.1)),
-
-      new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter).withTimeout(1),
-      new WaitCommand(0),
-      new InstantCommand(() -> m_intake.intakeNote(), m_intake),
-      new WaitCommand(1),
-      new InstantCommand(() -> m_shooter.stopShooting(), m_shooter),
-      new InstantCommand(() -> m_intake.stopIntake(), m_intake),
-
-      driveAndIntake,
-      new InstantCommand(() -> m_intake.outtakeNote(), m_intake),
-      new WaitCommand(.1),
-      new InstantCommand(() -> m_intake.stopIntake(), m_intake),
-
-      new WaitCommand(.1),
-      new RunCommand(() -> m_drivetrain.arcadeDrive(.5, 0), m_drivetrain).withTimeout(1.5),
-      // new InstantCommand(() -> m_intake.outtakeNote(), m_intake),
-      // new WaitCommand(.05),
-      // new InstantCommand(() -> m_intake.stopIntake(), m_intake),
-
-      new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter).withTimeout(1),
-      new WaitCommand(0),
-      new InstantCommand(() -> m_intake.intakeNote(), m_intake),
-      new WaitCommand(1),
-      new InstantCommand(() -> m_shooter.stopShooting(), m_shooter),
-      new InstantCommand(() -> m_intake.stopIntake(), m_intake)
-    );
-    return commandGroup;
+    return m_autoChooser.getSelected();
   }
   }
