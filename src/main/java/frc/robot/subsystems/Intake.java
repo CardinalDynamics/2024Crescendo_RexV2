@@ -25,7 +25,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void outtakeNote() {
-        m_intake.set(-1.0);
+        m_intake.set(-.8);
     }
 
     // defining method to stop the intake motor

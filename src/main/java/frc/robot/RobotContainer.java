@@ -11,11 +11,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.subsystems.Drivetrain;
@@ -80,6 +82,11 @@ public class RobotContainer {
     m_operatorController.a().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(20), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
     m_operatorController.y().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(.25), m_rotator));
     m_operatorController.x().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(-.25), m_rotator));
+
+    m_driverController.a().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kForward)));
+    m_driverController.b().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kReverse)));
+    m_driverController.y().whileTrue(Commands.run(() -> m_drivetrain.routine.dynamic(SysIdRoutine.Direction.kForward)));
+    m_driverController.x().whileTrue(Commands.run(() -> m_drivetrain.routine.dynamic(SysIdRoutine.Direction.kReverse)));
     // m_operatorController.b().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(kIntakeAngle), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
     
     // Uncomment when LL added
@@ -93,18 +100,40 @@ public class RobotContainer {
    */
 
   public Command getAutonomousCommand() {
+    ParallelCommandGroup driveAndIntake = new ParallelCommandGroup(
+      (new RunCommand(() -> m_drivetrain.arcadeDrive(-.5, 0), m_drivetrain)).withTimeout(1.5),
+      new InstantCommand(() -> m_intake.intakeNote(), m_intake)
+    );
     SequentialCommandGroup commandGroup = new SequentialCommandGroup(
       new InstantCommand(() -> m_rotator.setRotatorSpeed(-.25), m_rotator),
-      new WaitCommand(1.0),
+      new WaitCommand(2.0),
       new InstantCommand(() -> m_rotator.setRotatorSpeed(0), m_rotator),
-      (new WaitCommand(0.5)),
+      (new WaitCommand(0.1)),
+
+      new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter).withTimeout(1),
+      new WaitCommand(0),
+      new InstantCommand(() -> m_intake.intakeNote(), m_intake),
+      new WaitCommand(1),
+      new InstantCommand(() -> m_shooter.stopShooting(), m_shooter),
+      new InstantCommand(() -> m_intake.stopIntake(), m_intake),
+
+      driveAndIntake,
+      new InstantCommand(() -> m_intake.outtakeNote(), m_intake),
+      new WaitCommand(.1),
+      new InstantCommand(() -> m_intake.stopIntake(), m_intake),
+
+      new WaitCommand(.1),
+      new RunCommand(() -> m_drivetrain.arcadeDrive(.5, 0), m_drivetrain).withTimeout(1.5),
+      // new InstantCommand(() -> m_intake.outtakeNote(), m_intake),
+      // new WaitCommand(.05),
+      // new InstantCommand(() -> m_intake.stopIntake(), m_intake),
+
       new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter).withTimeout(1),
       new WaitCommand(0),
       new InstantCommand(() -> m_intake.intakeNote(), m_intake),
       new WaitCommand(1),
       new InstantCommand(() -> m_shooter.stopShooting(), m_shooter),
       new InstantCommand(() -> m_intake.stopIntake(), m_intake)
-      // (new RunCommand(() -> m_drivetrain.arcadeDrive(-.5, 0), m_drivetrain)).withTimeout(2)
     );
     return commandGroup;
   }
