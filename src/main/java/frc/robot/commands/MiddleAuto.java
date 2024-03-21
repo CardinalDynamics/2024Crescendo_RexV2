@@ -36,7 +36,8 @@ public class MiddleAuto extends SequentialCommandGroup{
             new InstantCommand(() -> intake.stopIntake(), intake),
 
             new WaitCommand(.1),
-            new RunCommand(() -> drivetrain.arcadeDrive(.5, 0), drivetrain).withTimeout(1.5),
+            new RunCommand(() -> drivetrain.arcadeDrive(.5, 0), drivetrain).withTimeout(1.7),
+            new InstantCommand(() -> drivetrain.setDriveVoltage(0), drivetrain),
             // new InstantCommand(() -> m_intake.outtakeNote(), m_intake),
             // new WaitCommand(.05),
             // new InstantCommand(() -> m_intake.stopIntake(), m_intake),

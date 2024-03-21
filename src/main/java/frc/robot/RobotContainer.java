@@ -20,9 +20,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.LeaveAuto;
 import frc.robot.commands.LeftAuto;
 import frc.robot.commands.MiddleAuto;
 import frc.robot.commands.RightAuto;
+import frc.robot.commands.SingleNoteAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rotator;
@@ -47,6 +49,8 @@ public class RobotContainer {
   private final Command kMiddleAuto = new MiddleAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
   private final Command kRightCurveAuto = new RightAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
   private final Command kLeftCurveAuto = new LeftAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
+  private final Command kSingleNoteAuto = new SingleNoteAuto(m_intake, m_rotator, m_shooter);
+  private final Command kDriveOnlyAuto = new LeaveAuto(m_drivetrain);
   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -60,6 +64,8 @@ public class RobotContainer {
     m_autoChooser.addOption("Red Source Side", kRightCurveAuto);
     m_autoChooser.addOption("Blue Source Side", kLeftCurveAuto);
     m_autoChooser.addOption("Blue Amp Side", kRightCurveAuto);
+    m_autoChooser.addOption("SHOOT 1 NOTE ONLY", kSingleNoteAuto);
+    m_autoChooser.addOption("LEAVE POINTS ONLY", kDriveOnlyAuto);
 
     SmartDashboard.putData(m_autoChooser);
     // Configure the trigger bindings
@@ -76,11 +82,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    m_drivetrain.setDefaultCommand(
-      new RunCommand(
-        () -> m_drivetrain.arcadeDrive(m_driverController.getLeftY(), m_driverController.getRightX()),
-        m_drivetrain
-      ));
+    m_drivetrain.setDefaultCommand(new RunCommand(() -> m_drivetrain.arcadeDrive(
+      m_driverController.getLeftY(), m_driverController.getRightX()
+    ), m_drivetrain));
+    // m_drivetrain.setDefaultCommand(new RunCommand(() -> m_drivetrain.setDriveVoltage(.27), m_drivetrain));
+
     // m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
     
     // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
@@ -98,10 +104,10 @@ public class RobotContainer {
     m_operatorController.y().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(.25), m_rotator));
     m_operatorController.x().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(-.25), m_rotator));
 
-    m_driverController.a().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kForward)));
-    m_driverController.b().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kReverse)));
-    m_driverController.y().whileTrue(Commands.run(() -> m_drivetrain.routine.dynamic(SysIdRoutine.Direction.kForward)));
-    m_driverController.x().whileTrue(Commands.run(() -> m_drivetrain.routine.dynamic(SysIdRoutine.Direction.kReverse)));
+    // m_driverController.a().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kForward)));
+    // m_driverController.b().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kReverse)));
+    // m_driverController.y().whileTrue(Commands.run(() -> m_drivetrain.routine.dynamic(SysIdRoutine.Direction.kForward)));
+    // m_driverController.x().whileTrue(Commands.run(() -> m_drivetrain.routine.dynamic(SysIdRoutine.Direction.kReverse)));
     // m_operatorController.b().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(kIntakeAngle), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
     
     // Uncomment when LL added

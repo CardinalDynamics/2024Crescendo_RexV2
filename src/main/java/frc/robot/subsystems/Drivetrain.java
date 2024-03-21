@@ -17,6 +17,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -43,11 +44,11 @@ public class Drivetrain extends SubsystemBase {
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
 
-  public SysIdRoutine routine;
+  // public SysIdRoutine routine;
 
-  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+  // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+  // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
   /*Constructor. This method is called when an instance of the class is created. This should generally be used to set up
    * member variables and perform any configuration or set up necessary on hardware.
    */
@@ -79,34 +80,43 @@ public class Drivetrain extends SubsystemBase {
     // the rears set to follow the fronts
     m_drivetrain = new DifferentialDrive(leftFront, rightFront);
 
-    routine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
-      (Measure<Voltage> volts) -> {
-        leftFront.setVoltage(volts.in(Volts));
-        rightFront.setVoltage(volts.in(Volts));
-      },
-      log -> {
-        log.motor("drive-left").voltage(
-          m_appliedVoltage.mut_replace(
-            leftFront.get() * RobotController.getBatteryVoltage(), Volts))
-          .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(), Meters))
-          .linearVelocity(
-            m_velocity.mut_replace(m_leftEncoder.getVelocity(), MetersPerSecond));
+    // routine = new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
+    //   (Measure<Voltage> volts) -> {
+    //     leftFront.setVoltage(volts.in(Volts));
+    //     rightFront.setVoltage(volts.in(Volts));
+    //   },
+    //   log -> {
+    //     log.motor("drive-left").voltage(
+    //       m_appliedVoltage.mut_replace(
+    //         leftFront.get() * RobotController.getBatteryVoltage(), Volts))
+    //       .linearPosition(m_distance.mut_replace(m_leftEncoder.getPosition(), Meters))
+    //       .linearVelocity(
+    //         m_velocity.mut_replace(m_leftEncoder.getVelocity(), MetersPerSecond));
 
-        log.motor("drive-right").voltage(
-          m_appliedVoltage.mut_replace(
-            rightFront.get() * RobotController.getBatteryVoltage(), Volts))
-          .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(), Meters))
-          .linearVelocity(
-            m_velocity.mut_replace(m_rightEncoder.getVelocity(), MetersPerSecond));
-      },
-      this
-    ));
+    //     log.motor("drive-right").voltage(
+    //       m_appliedVoltage.mut_replace(
+    //         rightFront.get() * RobotController.getBatteryVoltage(), Volts))
+    //       .linearPosition(m_distance.mut_replace(m_rightEncoder.getPosition(), Meters))
+    //       .linearVelocity(
+    //         m_velocity.mut_replace(m_rightEncoder.getVelocity(), MetersPerSecond));
+    //   },
+    //   this
+    // ));
   }
 
   /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
    * and a rotation about the Z (turning the robot about it's center) and uses these to control the drivetrain motors */
   public void arcadeDrive(double speed, double rotation) {
     m_drivetrain.arcadeDrive(speed, rotation);
+  }
+
+  public void setDriveVoltage(double voltage) {
+    leftFront.setVoltage(voltage);
+    rightFront.setVoltage(voltage);
+    SmartDashboard.putNumber("Front Left", leftFront.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Back Left", leftRear.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Front Right", rightFront.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Back Right", rightRear.getEncoder().getVelocity());
   }
 
   @Override
