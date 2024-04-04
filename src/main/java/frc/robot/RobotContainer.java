@@ -59,12 +59,12 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kOperatorControllerPort);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_autoChooser.setDefaultOption("Middle Auto", kMiddleAuto);
+    m_autoChooser.setDefaultOption("SHOOT 1 NOTE ONLY", kSingleNoteAuto);
+    m_autoChooser.addOption("Middle Auto", kMiddleAuto);
     m_autoChooser.addOption("Red Amp Side", kLeftCurveAuto);
     m_autoChooser.addOption("Red Source Side", kRightCurveAuto);
     m_autoChooser.addOption("Blue Source Side", kLeftCurveAuto);
     m_autoChooser.addOption("Blue Amp Side", kRightCurveAuto);
-    m_autoChooser.addOption("SHOOT 1 NOTE ONLY", kSingleNoteAuto);
     m_autoChooser.addOption("LEAVE POINTS ONLY", kDriveOnlyAuto);
 
     SmartDashboard.putData(m_autoChooser);
@@ -86,7 +86,7 @@ public class RobotContainer {
       m_driverController.getLeftY(), m_driverController.getRightX()
     ), m_drivetrain));
     // m_drivetrain.setDefaultCommand(new RunCommand(() -> m_drivetrain.setDriveVoltage(.27), m_drivetrain));
-
+    m_driverController.a().onTrue(new InstantCommand(() -> m_drivetrain.toggleDriveMode()));
     // m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
     
     // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
@@ -95,14 +95,17 @@ public class RobotContainer {
     // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
     //   .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
     m_operatorController.rightTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter));
+    m_operatorController.leftTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed + .1), m_shooter));
     
     m_operatorController.leftBumper().onTrue(new RunCommand(() -> m_intake.intakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
     m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_intake.outtakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
-    m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_shooter.setSpeed(-.1), m_shooter)).onFalse(new RunCommand(() -> m_shooter.setSpeed(0), m_shooter));
+    // m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_shooter.setSpeed(-.1), m_shooter)).onFalse(new RunCommand(() -> m_shooter.setSpeed(0), m_shooter));
 
     m_operatorController.a().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(20), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
-    m_operatorController.y().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(.25), m_rotator));
+    m_operatorController.y().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(.35), m_rotator));
     m_operatorController.x().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(-.25), m_rotator));
+
+    m_operatorController.b().whileTrue(Commands.run(() -> m_shooter.usePIDShooter(), m_shooter));
 
     // m_driverController.a().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kForward)));
     // m_driverController.b().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kReverse)));

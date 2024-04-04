@@ -43,6 +43,7 @@ public class Drivetrain extends SubsystemBase {
   CANSparkMax rightRear;
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
+  Boolean driveBackwards = false;
 
   // public SysIdRoutine routine;
 
@@ -117,6 +118,14 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Back Left", leftRear.getEncoder().getVelocity());
     SmartDashboard.putNumber("Front Right", rightFront.getEncoder().getVelocity());
     SmartDashboard.putNumber("Back Right", rightRear.getEncoder().getVelocity());
+  }
+
+  public void toggleDriveMode() {
+    driveBackwards = !driveBackwards;
+  }
+
+  public Boolean getIsBackwards() {
+    return driveBackwards;
   }
 
   @Override

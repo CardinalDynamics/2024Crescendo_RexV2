@@ -48,8 +48,12 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putNumber("Shooter Angle", m_robotContainer.m_rotator.getMeasurement());
-    SmartDashboard.putNumber("Shooter Speed", 
-      (m_robotContainer.m_shooter.getTopShooterSpeed() + m_robotContainer.m_shooter.getBottomShooterSpeed()) / 2);
+    SmartDashboard.putNumber("Top Shooter Speed", 
+      (m_robotContainer.m_shooter.getTopShooterSpeed()));
+    SmartDashboard.putNumber("Bottom Shooter Speed", 
+      (m_robotContainer.m_shooter.getBottomShooterSpeed()));
+
+    SmartDashboard.putBoolean("Shooter Ready", m_robotContainer.m_shooter.getTopShooterSpeed() > 2500);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

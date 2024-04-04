@@ -14,7 +14,7 @@ import static frc.robot.Constants.IntakeConstants.*;
 public class RightAuto extends SequentialCommandGroup{
     public RightAuto(Drivetrain drivetrain, Intake intake, Rotator rotator, Shooter shooter) {
         ParallelCommandGroup driveAndIntake = new ParallelCommandGroup(
-            (new RunCommand(() -> drivetrain.arcadeDrive(-.5, 0), drivetrain)).withTimeout(.8),
+            (new RunCommand(() -> drivetrain.arcadeDrive(-.5, 0), drivetrain)).withTimeout(1),
             new RunCommand(() -> intake.intakeNote(), intake).withTimeout(1)
         );
         addCommands(
@@ -30,14 +30,14 @@ public class RightAuto extends SequentialCommandGroup{
             new InstantCommand(() -> shooter.stopShooting(), shooter),
             new InstantCommand(() -> intake.stopIntake(), intake),
 
-            (new RunCommand(() -> drivetrain.arcadeDrive(-.5, .41), drivetrain)).withTimeout(1),
+            (new RunCommand(() -> drivetrain.arcadeDrive(-.5, .41), drivetrain)).withTimeout(1.1),
             driveAndIntake,
             // new InstantCommand(() -> intake.outtakeNote(), intake),
             // new WaitCommand(.1),
             new InstantCommand(() -> intake.stopIntake(), intake),
 
             (new RunCommand(() -> drivetrain.arcadeDrive(.5, 0), drivetrain)).withTimeout(1),
-            (new RunCommand(() -> drivetrain.arcadeDrive(.5, -.41), drivetrain)).withTimeout(1),
+            (new RunCommand(() -> drivetrain.arcadeDrive(.5, -.41), drivetrain)).withTimeout(1.1),
             (new RunCommand(() -> drivetrain.arcadeDrive(.5, 0), drivetrain)).withTimeout(.2),
             new InstantCommand(() -> drivetrain.setDriveVoltage(0), drivetrain),
 

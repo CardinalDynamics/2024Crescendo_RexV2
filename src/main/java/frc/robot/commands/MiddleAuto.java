@@ -14,7 +14,7 @@ import static frc.robot.Constants.IntakeConstants.*;
 public class MiddleAuto extends SequentialCommandGroup{
     public MiddleAuto(Drivetrain drivetrain, Intake intake, Rotator rotator, Shooter shooter) {
         ParallelCommandGroup driveAndIntake = new ParallelCommandGroup(
-            (new RunCommand(() -> drivetrain.arcadeDrive(-.5, 0), drivetrain)).withTimeout(1.5),
+            (new RunCommand(() -> drivetrain.arcadeDrive(-.5, 0), drivetrain)).withTimeout(1.7),
             new InstantCommand(() -> intake.intakeNote(), intake)
         );
         addCommands(
@@ -36,7 +36,7 @@ public class MiddleAuto extends SequentialCommandGroup{
             new InstantCommand(() -> intake.stopIntake(), intake),
 
             new WaitCommand(.1),
-            new RunCommand(() -> drivetrain.arcadeDrive(.5, 0), drivetrain).withTimeout(1.7),
+            new RunCommand(() -> drivetrain.arcadeDrive(.5, 0), drivetrain).withTimeout(1.85),
             new InstantCommand(() -> drivetrain.setDriveVoltage(0), drivetrain),
             // new InstantCommand(() -> m_intake.outtakeNote(), m_intake),
             // new WaitCommand(.05),

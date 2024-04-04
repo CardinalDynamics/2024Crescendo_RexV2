@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -17,7 +18,11 @@ public class Shooter extends SubsystemBase {
     RelativeEncoder m_bottomEncoder;
     RelativeEncoder m_topEncoder;
     double setpoint;
-    PIDController m_controller;
+
+    PIDController m_topController;
+    SimpleMotorFeedforward topFeedforward;
+    PIDController m_bottomController;
+    SimpleMotorFeedforward bottomFeedforward;
 
     // constructor
     public Shooter() {
@@ -26,17 +31,25 @@ public class Shooter extends SubsystemBase {
         m_bottomShooter = new CANSparkMax(kBottomShooterID, MotorType.kBrushless);
         m_bottomEncoder = m_bottomShooter.getEncoder();
         m_topEncoder = m_topShooter.getEncoder();
-        m_controller = new PIDController(kP, kI, kD);
-        m_controller.setTolerance(100);
-        m_controller.setSetpoint(0);
+
+        m_topController = new PIDController(kP, kI, kD);
+        topFeedforward = new SimpleMotorFeedforward(kS, kV);
+        m_topController.setTolerance(100, 10);
+
+        m_bottomController = new PIDController(kP, kI, kD);
+        bottomFeedforward = new SimpleMotorFeedforward(kS, kV);
+        m_bottomController.setTolerance(100, 10);
+
+        // m_controller.setSetpoint(0);
         // Top and bottom shooter should both be going outwards given positive input.
-        m_bottomShooter.setInverted(false);
+        // m_bottomShooter.setInverted(false);
         m_topShooter.setInverted(false);
-        setpoint = 0;
+        m_topController.setSetpoint(2550);
+        m_topController.setSetpoint(2150);
     }
 
     public boolean atSetpoint() {
-        return m_controller.atSetpoint();
+        return m_topController.atSetpoint() && m_bottomController.atSetpoint();
     }
 
     public void setSetpoint(double setpoint) {
@@ -57,13 +70,13 @@ public class Shooter extends SubsystemBase {
         return m_topEncoder.getVelocity();
     }
 
-    public void goToSpeed() {
-        if (m_controller.getSetpoint() == 0 && m_controller.atSetpoint()) {
-            m_controller.reset();
-        }
-        m_bottomShooter.setVoltage(m_controller.calculate(getTopShooterSpeed(), setpoint));
-        m_bottomShooter.setVoltage(m_controller.calculate(getBottomShooterSpeed(), setpoint));
-    }
+    // public void goToSpeed() {
+    //     if (m_controller.getSetpoint() == 0 && m_controller.atSetpoint()) {
+    //         m_controller.reset();
+    //     }
+    //     m_bottomShooter.setVoltage(m_controller.calculate(getTopShooterSpeed(), setpoint) + feedforward.calculate(setpoint));
+    //     m_bottomShooter.setVoltage(m_bottomController.calculate(getBottomShooterSpeed(), setpoint) + feedforward.calculate(setpoint));
+    // }
 
     public void setSpeed(double speed) {
         m_topShooter.set(speed);
@@ -74,5 +87,10 @@ public class Shooter extends SubsystemBase {
     public void stopShooting() {
         m_topShooter.set(0);
         m_bottomShooter.set(0);
+    }
+
+    public void usePIDShooter() {
+        m_topShooter.setVoltage(m_topController.calculate(m_topEncoder.getVelocity()) + topFeedforward.calculate(2500));
+        m_bottomShooter.setVoltage(m_bottomController.calculate(m_bottomEncoder.getVelocity())  + bottomFeedforward.calculate(2150));
     }
 }
