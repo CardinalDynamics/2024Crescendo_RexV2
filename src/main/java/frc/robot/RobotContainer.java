@@ -95,7 +95,7 @@ public class RobotContainer {
     // m_operatorController.rightTrigger().onTrue(new InstantCommand(() -> m_shooter.setSetpoint(1700), m_shooter))
     //   .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
     m_operatorController.rightTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter));
-    m_operatorController.leftTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed + .1), m_shooter));
+    m_operatorController.leftTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(1), m_shooter));
     
     m_operatorController.leftBumper().onTrue(new RunCommand(() -> m_intake.intakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
     m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_intake.outtakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
