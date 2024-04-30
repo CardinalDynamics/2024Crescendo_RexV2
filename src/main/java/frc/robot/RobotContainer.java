@@ -24,12 +24,14 @@ import frc.robot.commands.LeaveAuto;
 import frc.robot.commands.LeftAuto;
 import frc.robot.commands.MiddleAuto;
 import frc.robot.commands.RightAuto;
+import frc.robot.commands.RotateToTag;
 import frc.robot.commands.SingleNoteAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Rotator;
 import frc.robot.subsystems.Shooter;
 // import frc.robot.subsytems.Vision;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,6 +46,7 @@ public class RobotContainer {
   // public so I can use smartdashboard
   public final Rotator m_rotator = new Rotator();
   public final Shooter m_shooter = new Shooter();
+  public final Vision m_vision = new Vision();
 
   public final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
   private final Command kMiddleAuto = new MiddleAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
@@ -86,7 +89,7 @@ public class RobotContainer {
       m_driverController.getLeftY(), m_driverController.getRightX()
     ), m_drivetrain));
     // m_drivetrain.setDefaultCommand(new RunCommand(() -> m_drivetrain.setDriveVoltage(.27), m_drivetrain));
-    m_driverController.a().onTrue(new InstantCommand(() -> m_drivetrain.toggleDriveMode()));
+    m_driverController.a().whileTrue(new RotateToTag(m_drivetrain, m_vision));
     // m_shooter.setDefaultCommand(Commands.run(() -> m_shooter.goToSpeed(), m_shooter));
     
     // m_rotator.setDefaultCommand(Commands.run(() -> m_rotator.goToSetpoint(), m_rotator));
@@ -101,11 +104,16 @@ public class RobotContainer {
     m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_intake.outtakeNote(), m_intake)).onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
     // m_operatorController.rightBumper().onTrue(new RunCommand(() -> m_shooter.setSpeed(-.1), m_shooter)).onFalse(new RunCommand(() -> m_shooter.setSpeed(0), m_shooter));
 
-    m_operatorController.a().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(20), m_shooter)).onFalse(new InstantCommand(() -> m_rotator.setSetPoint(kStartAngle)));
+    m_operatorController.a().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(0)));
+    m_operatorController.a().whileTrue(Commands.run(() -> m_rotator.usePIDoutput(), m_rotator));
+
+    m_operatorController.b().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(m_rotator.getAngleFromDistance(m_vision.getDistanceFromSpeaker()))));
+    m_operatorController.b().whileTrue(Commands.run(() -> m_rotator.usePIDoutput(), m_rotator));
+
     m_operatorController.y().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(.35), m_rotator));
     m_operatorController.x().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(-.25), m_rotator));
 
-    m_operatorController.b().whileTrue(Commands.run(() -> m_shooter.usePIDShooter(), m_shooter));
+    // m_operatorController.b().whileTrue(Commands.run(() -> m_shooter.usePIDShooter(), m_shooter));
 
     // m_driverController.a().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kForward)));
     // m_driverController.b().whileTrue(Commands.run(() -> m_drivetrain.routine.quasistatic(SysIdRoutine.Direction.kReverse)));

@@ -55,16 +55,15 @@ public final class Constants {
     // public static final double kArmSpeedUp = .5;
     // public static final double kArmSpeedDown = -.5;
 
-    // public static final int kSourceA = 3;
-    // public static final int kSourceB = 4;
     public static final double kPivotHeightInches = 9;
     public static final double kIntakeRadiusInches = 8.5;
     public static final double kStartAngle = 77;
-    // public static final double kIntakeAngle = ;
+    public static final double kIntakeAngle = 0;
+    public static final int kEncoderPort = 0;
   }
 
   public static class RotatorPIDConstants {
-    public static final double kP = .3;
+    public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
 

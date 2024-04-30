@@ -4,17 +4,16 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.RotatorConstants.*;
 import static frc.robot.Constants.RotatorPIDConstants.*;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Rotator extends SubsystemBase {
     CANSparkMax m_leftArm;
     CANSparkMax m_rightArm;
-    RelativeEncoder m_leftEncoder;
-    RelativeEncoder m_rightEncoder;
+    DutyCycleEncoder m_revEncoder;
     double setpoint;
     PIDController m_controller;
 
@@ -28,22 +27,14 @@ public class Rotator extends SubsystemBase {
         m_controller = new PIDController(kP, kI, kD);
         m_controller.setTolerance(.3);
 
-        m_leftEncoder = m_leftArm.getEncoder();
-        m_rightEncoder = m_rightArm.getEncoder();
-        // divide by geardown ratio multiplly by degrees
-        m_leftEncoder.setPositionConversionFactor(360/135);
-        m_rightEncoder.setPositionConversionFactor(360/135);
-        // m_leftArm.burnFlash();
-        // m_rightArm.burnFlash();
+        m_revEncoder = new DutyCycleEncoder(kEncoderPort);
 
-        m_leftEncoder.setPosition(kStartAngle);
-        m_rightEncoder.setPosition(kStartAngle);
-        m_controller.setSetpoint(kStartAngle);
+        m_revEncoder.setPositionOffset(0);
     }
 
     public double getMeasurement() {
         // return (m_leftEncoder.getPosition() + m_rightEncoder.getPosition()) / 2;
-        return m_rightEncoder.getPosition();
+        return m_revEncoder.get();
     }
 
     public boolean atSetpoint() {
@@ -67,15 +58,14 @@ public class Rotator extends SubsystemBase {
     }
 
     public void zeroEncoder() {
-        m_leftEncoder.setPosition(0);
-        m_rightEncoder.setPosition(0);
+        m_revEncoder.reset();
     }
 
     public void setSetPoint(double setpoint) {
         m_controller.setSetpoint(setpoint);
     }
 
-    public void goToSetpoint() {
+    public void usePIDoutput() {
         if (m_controller.atSetpoint()) {
             m_controller.reset();
         }
