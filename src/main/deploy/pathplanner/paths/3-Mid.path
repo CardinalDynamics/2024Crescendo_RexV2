@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.493344245947751,
+        "y": 4.256672217048139
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.762114400077183,
+        "y": 4.438988294138374
+      },
+      "isLocked": false,
+      "linkedName": "3 pickup"
+    },
+    {
+      "anchor": {
+        "x": 1.328428690111538,
+        "y": 5.52811290895741
+      },
+      "prevControl": {
+        "x": 2.3413253632140374,
+        "y": 5.52811290895741
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Mid Start"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": true,
+  "folder": "Middle",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

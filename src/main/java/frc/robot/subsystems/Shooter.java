@@ -83,6 +83,11 @@ public class Shooter extends SubsystemBase {
         m_bottomShooter.set(speed - .1);
     }
 
+    public void setShooterVoltage(double volts) {
+        m_topShooter.setVoltage(volts);
+        m_bottomShooter.setVoltage(volts);
+    }
+
     // method to stop shooter motors
     public void stopShooting() {
         m_topShooter.set(0);

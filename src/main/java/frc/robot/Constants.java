@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -26,10 +28,20 @@ public final class Constants {
     public static final int kLeftFrontID = 12;
     public static final int kRightFrontID = 3;
     public static final int kRightRearID = 2;
+    public static final double kDriveRatio = 8.46;
+    public static final double kWheelRadius = 6;
+    public static final double kDistanceFactor = 
+      (Units.inchesToMeters(1 / (kDriveRatio * 2 * Math.PI * Units.inchesToMeters(kWheelRadius)) * 10));
     
+    public static final double kTrackWidth = Units.inchesToMeters(23);
+    public static final DifferentialDriveKinematics kKinematics = new DifferentialDriveKinematics(kTrackWidth);
+
 
     // Current limit for drivetrain motors
     public static final int kCurrentLimit = 60;
+
+    public static final double kS = .26;
+    public static final double kV = 450;
   }
 
   public static class IntakeConstants {
@@ -57,6 +69,7 @@ public final class Constants {
 
     public static final double kPivotHeightInches = 9;
     public static final double kIntakeRadiusInches = 8.5;
+    public static final double kSpeakerHeightInches = 78;
     public static final double kStartAngle = 77;
     public static final double kIntakeAngle = 0;
     public static final int kEncoderPort = 0;
@@ -66,6 +79,10 @@ public final class Constants {
     public static final double kP = 0;
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double kS = 0;
+    public static final double kG = 0;
+    public static final double kV = 0;
+    public static final double kTolerance = .3;
 
     // public static final double kArmUpSetPoint = 95;
     // public static final double kShootingPositionSetPoint = 0;
@@ -81,8 +98,15 @@ public final class Constants {
     public static final double kS = 0;
   }
 
+  public static class DrivePIDConstants {
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+  }
+
   public static class LimelightConstants {
-    public static final double kLimelightMountAngle = 0;
-    public static final double kLimelightLenseHeight = 0;
+    public static final double kLimelightMountAngle = 67;
+    public static final double kLimelightLenseHeight = 14.25;
+    public static final double kTagHeight = 48.125;
   }
 }

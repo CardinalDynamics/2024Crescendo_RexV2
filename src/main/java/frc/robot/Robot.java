@@ -29,7 +29,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    SmartDashboard.putNumber("Distance From Speaker", 0.0);
   }
 
   /**
@@ -46,14 +45,19 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
     SmartDashboard.putNumber("Shooter Angle", m_robotContainer.m_rotator.getMeasurement());
     SmartDashboard.putNumber("Top Shooter Speed", 
       (m_robotContainer.m_shooter.getTopShooterSpeed()));
     SmartDashboard.putNumber("Bottom Shooter Speed", 
       (m_robotContainer.m_shooter.getBottomShooterSpeed()));
+    SmartDashboard.putNumber("Shooter Angle", m_robotContainer.m_rotator.getMeasurement());
+    SmartDashboard.putNumber("Rotation Setpoint", m_robotContainer.m_rotator.getSetpoint());
+    SmartDashboard.putNumber("Distance From Speaker", m_robotContainer.m_vision.getDistanceFromSpeaker());
+    SmartDashboard.putBoolean("Encoder connected", m_robotContainer.m_rotator.encoderConnected());
+    
 
     SmartDashboard.putBoolean("Shooter Ready", m_robotContainer.m_shooter.getTopShooterSpeed() > 2500);
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
