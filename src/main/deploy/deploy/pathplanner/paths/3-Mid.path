@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.493344245947751,
-        "y": 4.256672217048139
+        "x": 2.388096855965791,
+        "y": 4.373613761472538
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.762114400077183,
-        "y": 4.438988294138374
+        "x": 1.4558993423362099,
+        "y": 4.735563751917112
       },
       "isLocked": false,
-      "linkedName": "3 pickup"
+      "linkedName": "3"
     },
     {
       "anchor": {
-        "x": 1.328428690111538,
-        "y": 5.52811290895741
+        "x": 1.359011265031077,
+        "y": 5.566417514601411
       },
       "prevControl": {
-        "x": 2.3413253632140374,
-        "y": 5.52811290895741
+        "x": 2.3590112650310777,
+        "y": 5.566417514601411
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Mid Start"
+      "linkedName": "Mid"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
     "rotation": 0,
     "rotateFast": false
   },
-  "reversed": true,
+  "reversed": false,
   "folder": "Middle",
   "previewStartingState": {
     "rotation": 0,
