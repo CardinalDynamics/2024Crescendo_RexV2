@@ -49,6 +49,8 @@ import frc.robot.subsystems.Shooter;
 // import frc.robot.subsytems.Vision;
 import frc.robot.subsystems.Vision;
 
+
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -93,9 +95,14 @@ public class RobotContainer {
       AutoBuilder.followPath(PathPlannerPath.fromPathFile("1-Mid")),
       AutoBuilder.followPath(PathPlannerPath.fromPathFile("Mid-3")),
       AutoBuilder.followPath(PathPlannerPath.fromPathFile("3-Mid")));
+      SmartDashboard.putBoolean("Paths Loaded", true);
     } catch (Exception e) {
+      SmartDashboard.putString("error", e.getMessage());
       kFourNoteMiddle = kMiddleAuto;
+      SmartDashboard.putBoolean("Paths Loaded", false);
     }
+
+    
 
     m_autoChooser.setDefaultOption("SHOOT 1 NOTE ONLY", kSingleNoteAuto);
     m_autoChooser.addOption("Middle Auto", kMiddleAuto);
@@ -105,6 +112,7 @@ public class RobotContainer {
     m_autoChooser.addOption("Blue Amp Side", kRightCurveAuto);
     m_autoChooser.addOption("LEAVE POINTS ONLY", kDriveOnlyAuto);
     m_autoChooser.addOption("4 note??", kFourNoteMiddle);
+    m_autoChooser.addOption("Straight", AutoBuilder.followPath(PathPlannerPath.fromPathFile("Straight")));
 
     SmartDashboard.putData(m_autoChooser);
     // Configure the trigger bindings

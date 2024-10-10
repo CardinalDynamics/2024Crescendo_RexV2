@@ -18,10 +18,10 @@ public class MiddleAuto extends SequentialCommandGroup{
             new InstantCommand(() -> intake.intakeNote(), intake)
         );
         addCommands(
-            new InstantCommand(() -> rotator.setRotatorSpeed(-.25), rotator),
-            new WaitCommand(2.0),
-            new InstantCommand(() -> rotator.setRotatorSpeed(0), rotator),
-            (new WaitCommand(0.1)),
+            // new InstantCommand(() -> rotator.setRotatorSpeed(-.25), rotator),
+            // new WaitCommand(2.0),
+            // new InstantCommand(() -> rotator.setRotatorSpeed(0), rotator),
+            // (new WaitCommand(0.1)),
 
             new RunCommand(() -> shooter.setSpeed(kShooterSpeed), shooter).withTimeout(1),
             new WaitCommand(0),

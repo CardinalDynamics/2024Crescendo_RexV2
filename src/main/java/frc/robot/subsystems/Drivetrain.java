@@ -86,9 +86,9 @@ public class Drivetrain extends SubsystemBase {
     m_rightEncoder = m_rightFront.getEncoder();
 
     m_leftEncoder.setPositionConversionFactor(kDistanceFactor);
-    m_leftEncoder.setPositionConversionFactor(kDistanceFactor);
+    m_rightEncoder.setPositionConversionFactor(kDistanceFactor);
     m_leftEncoder.setVelocityConversionFactor(kDistanceFactor/60);
-    m_leftEncoder.setVelocityConversionFactor(kDistanceFactor/60);
+    m_rightEncoder.setVelocityConversionFactor(kDistanceFactor/60);
 
     /*Sets current limits for the drivetrain motors. This helps reduce the likelihood of wheel spin, reduces motor heating
      *at stall (Drivetrain pushing against something) and helps maintain battery voltage under heavy demand */
