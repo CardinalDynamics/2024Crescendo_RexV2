@@ -112,7 +112,9 @@ public class RobotContainer {
     m_autoChooser.addOption("Blue Amp Side", kRightCurveAuto);
     m_autoChooser.addOption("LEAVE POINTS ONLY", kDriveOnlyAuto);
     m_autoChooser.addOption("4 note??", kFourNoteMiddle);
-    m_autoChooser.addOption("Straight", AutoBuilder.followPath(PathPlannerPath.fromPathFile("Straight")));
+    m_autoChooser.addOption("Straight", new SequentialCommandGroup(
+      new InstantCommand(() -> m_drivetrain.resetEncoders(), m_drivetrain),
+      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Straight"))));
 
     SmartDashboard.putData(m_autoChooser);
     // Configure the trigger bindings

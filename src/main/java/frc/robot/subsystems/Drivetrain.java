@@ -112,8 +112,6 @@ public class Drivetrain extends SubsystemBase {
     m_navx.reset();
     resetEncoders();
 
-    differentialDrive = new DifferentialDrive(m_leftFront, m_rightFront);
-
     ReplanningConfig config = new ReplanningConfig();
     AutoBuilder.configureRamsete(this::getPose, this::resetOdometry, this::getWheelSpeeds, this::driveRobotRelative, config, () -> false, this);
 
