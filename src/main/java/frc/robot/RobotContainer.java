@@ -20,6 +20,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.SynchronousInterrupt.WaitResult;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -75,7 +77,7 @@ public class RobotContainer {
   private final Command kLeftCurveAuto = new LeftAuto(m_drivetrain, m_intake, m_rotator, m_shooter);
   private final Command kSingleNoteAuto = new SingleNoteAuto(m_intake, m_rotator, m_shooter);
   private final Command kDriveOnlyAuto = new LeaveAuto(m_drivetrain);
-  private Command kFourNoteMiddle;
+  // private Command kFourNoteMiddle;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -87,20 +89,20 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    try {
-      kFourNoteMiddle = new FourNoteMiddle(m_drivetrain, m_intake, m_rotator, m_shooter,
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Mid-2")),
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("2-Mid")),
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Mid-1")),
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("1-Mid")),
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Mid-3")),
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("3-Mid")));
-      SmartDashboard.putBoolean("Paths Loaded", true);
-    } catch (Exception e) {
-      SmartDashboard.putString("error", e.getMessage());
-      kFourNoteMiddle = kMiddleAuto;
-      SmartDashboard.putBoolean("Paths Loaded", false);
-    }
+    // try {
+    //   kFourNoteMiddle = new FourNoteMiddle(m_drivetrain, m_intake, m_rotator, m_shooter,
+    //   AutoBuilder.followPath(PathPlannerPath.fromPathFile("Mid-2")),
+    //   AutoBuilder.followPath(PathPlannerPath.fromPathFile("2-Mid")),
+    //   AutoBuilder.followPath(PathPlannerPath.fromPathFile("Mid-1")),
+    //   AutoBuilder.followPath(PathPlannerPath.fromPathFile("1-Mid")),
+    //   AutoBuilder.followPath(PathPlannerPath.fromPathFile("Mid-3")),
+    //   AutoBuilder.followPath(PathPlannerPath.fromPathFile("3-Mid")));
+    //   SmartDashboard.putBoolean("Paths Loaded", true);
+    // } catch (Exception e) {
+    //   SmartDashboard.putString("error", e.getMessage());
+    //   kFourNoteMiddle = kMiddleAuto;
+    //   SmartDashboard.putBoolean("Paths Loaded", false);
+    // }
 
     
 
@@ -111,10 +113,10 @@ public class RobotContainer {
     m_autoChooser.addOption("Blue Source Side", kLeftCurveAuto);
     m_autoChooser.addOption("Blue Amp Side", kRightCurveAuto);
     m_autoChooser.addOption("LEAVE POINTS ONLY", kDriveOnlyAuto);
-    m_autoChooser.addOption("4 note??", kFourNoteMiddle);
-    m_autoChooser.addOption("Straight", new SequentialCommandGroup(
-      new InstantCommand(() -> m_drivetrain.resetEncoders(), m_drivetrain),
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Straight"))));
+    // m_autoChooser.addOption("4 note??", kFourNoteMiddle);
+    // m_autoChooser.addOption("Straight", new SequentialCommandGroup(
+    //   new InstantCommand(() -> m_drivetrain.resetEncoders(), m_drivetrain),
+    //   AutoBuilder.followPath(PathPlannerPath.fromPathFile("Straight"))));
 
     SmartDashboard.putData(m_autoChooser);
     // Configure the trigger bindings
@@ -151,8 +153,8 @@ public class RobotContainer {
     // m_operatorController.rightTrigger().onTrue(new InstantCommand(() ->
     // m_shooter.setSetpoint(1700), m_shooter))
     // .onFalse(new InstantCommand(() -> m_shooter.setSetpoint(0), m_shooter));
-    m_operatorController.rightTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(kShooterSpeed), m_shooter));
-    m_operatorController.leftTrigger().whileTrue(new RunCommand(() -> m_shooter.setShooterVoltage(11), m_shooter));
+    m_operatorController.rightTrigger().whileTrue(new RunCommand(() -> m_shooter.setSpeed(.75), m_shooter));
+    m_operatorController.leftTrigger().whileTrue(new RunCommand(() -> m_shooter.setShooterVoltage(12), m_shooter));
 
     m_operatorController.leftBumper().onTrue(new RunCommand(() -> m_intake.intakeNote(), m_intake))
         .onFalse(new RunCommand(() -> m_intake.stopIntake(), m_intake));
@@ -164,13 +166,16 @@ public class RobotContainer {
 
     m_operatorController.a().onTrue(new InstantCommand(() -> m_rotator.setSetPoint(0)));
     m_operatorController.a().whileTrue(Commands.run(() -> m_rotator.usePIDoutput(), m_rotator));
+    // m_operatorController.rightStick().whileTrue(Commands.run(() -> m_shooter.setSpeed(.7)));
 
-    m_operatorController.b().onTrue(new InstantCommand(
-        () -> m_rotator.setSetPoint(m_rotator.getAngleFromDistance(m_vision.getDistanceFromSpeaker()))));
+    // m_operatorController.b().onTrue(new InstantCommand(
+    //     () -> m_rotator.setSetPoint(m_rotator.getAngleFromDistance(m_vision.getDistanceFromSpeaker()))));
     m_operatorController.b().whileTrue(Commands.run(() -> m_rotator.usePIDoutput(), m_rotator));
 
     m_operatorController.y().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(.35), m_rotator));
     m_operatorController.x().whileTrue(Commands.run(() -> m_rotator.setRotatorSpeed(-.25), m_rotator));
+
+    
 
     // m_operatorController.b().whileTrue(Commands.run(() ->
     // m_shooter.usePIDShooter(), m_shooter));
@@ -194,13 +199,13 @@ public class RobotContainer {
     // .onFalse(new InstantCommand(() -> SmartDashboard.putNumber("Distance From
     // Speaker", 0.0)));
     SmartDashboard.putNumber("Shooter Angle", m_rotator.getMeasurement());
-    SmartDashboard.putNumber("Top Shooter Speed",
-        (m_shooter.getTopShooterSpeed()));
-    SmartDashboard.putNumber("Bottom Shooter Speed",
-        (m_shooter.getBottomShooterSpeed()));
+    // SmartDashboard.putNumber("Top Shooter Speed",
+    //     (m_shooter.getTopShooterSpeed()));
+    // SmartDashboard.putNumber("Bottom Shooter Speed",
+    //     (m_shooter.getBottomShooterSpeed()));
     SmartDashboard.putNumber("Shooter Angle", m_rotator.getMeasurement());
-    SmartDashboard.putNumber("Rotation Setpoint", m_rotator.getSetpoint());
-    SmartDashboard.putNumber("Distance From Speaker", m_vision.getDistanceFromSpeaker());
+    // SmartDashboard.putNumber("Rotation Setpoint", m_rotator.getSetpoint());
+    // SmartDashboard.putNumber("Distance From Speaker", m_vision.getDistanceFromSpeaker());
     SmartDashboard.putBoolean("Encoder connected", m_rotator.encoderConnected());
 
     SmartDashboard.putBoolean("Shooter Ready", m_shooter.getTopShooterSpeed() > 2500);

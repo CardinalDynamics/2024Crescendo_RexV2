@@ -51,8 +51,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Bottom Shooter Speed", 
       (m_robotContainer.m_shooter.getBottomShooterSpeed()));
     SmartDashboard.putNumber("Shooter Angle", m_robotContainer.m_rotator.getMeasurement());
-    SmartDashboard.putNumber("Rotation Setpoint", m_robotContainer.m_rotator.getSetpoint());
-    SmartDashboard.putNumber("Distance From Speaker", m_robotContainer.m_vision.getDistanceFromSpeaker());
+    // SmartDashboard.putNumber("Rotation Setpoint", m_robotContainer.m_rotator.getSetpoint());
+    // SmartDashboard.putNumber("Distance From Speaker", m_robotContainer.m_vision.getDistanceFromSpeaker());
     SmartDashboard.putBoolean("Encoder connected", m_robotContainer.m_rotator.encoderConnected());
     
 
